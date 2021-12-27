@@ -4,12 +4,14 @@
 //! This module writes Flattened Devicetree blobs as defined here:
 //! <https://devicetree-specification.readthedocs.io/en/stable/flattened-format.html>
 
-use std::cmp::{Ord, Ordering};
-use std::collections::BTreeMap;
-use std::convert::TryInto;
-use std::ffi::CString;
-use std::fmt;
-use std::mem::size_of_val;
+use alloc::collections::BTreeMap;
+use alloc::string::String;
+use alloc::vec::Vec;
+use core::cmp::{Ord, Ordering};
+use core::convert::TryInto;
+use core::fmt;
+use core::mem::size_of_val;
+use cstr_core::CString;
 
 use crate::{
     FDT_BEGIN_NODE, FDT_END, FDT_END_NODE, FDT_MAGIC, FDT_PROP, NODE_NAME_MAX_LEN,
@@ -69,10 +71,10 @@ impl fmt::Display for Error {
     }
 }
 
-impl std::error::Error for Error {}
+// impl core::error::Error for Error {}
 
 /// Result of a FDT writer operation.
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = core::result::Result<T, Error>;
 
 const FDT_HEADER_SIZE: usize = 40;
 const FDT_VERSION: u32 = 17;
@@ -296,7 +298,7 @@ impl FdtWriter {
 
     // Append `num_bytes` padding bytes (0x00).
     fn pad(&mut self, num_bytes: usize) {
-        self.data.extend(std::iter::repeat(0).take(num_bytes));
+        self.data.extend(core::iter::repeat(0).take(num_bytes));
     }
 
     // Append padding bytes (0x00) until the length of data is a multiple of `alignment`.
@@ -967,7 +969,7 @@ mod tests {
     #[test]
     #[cfg(feature = "long_running_test")]
     fn test_overflow_subtract() {
-        let overflow_size = u32::MAX / std::mem::size_of::<FdtReserveEntry>() as u32 - 3;
+        let overflow_size = u32::MAX / core::mem::size_of::<FdtReserveEntry>() as u32 - 3;
         let too_large_mem_reserve: Vec<FdtReserveEntry> = (0..overflow_size)
             .map(|i| FdtReserveEntry::new(u64::from(i) * 2, 1).unwrap())
             .collect();

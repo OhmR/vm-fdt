@@ -17,3 +17,6 @@ keywords = ["fdt"]
 #
 # The rust-vmm-ci will still run these tests.
 long_running_test = []
+
+[dependencies]
+cstr_core = "0.2.4"
